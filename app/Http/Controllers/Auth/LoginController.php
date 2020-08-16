@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailValidationMail;
 
 class LoginController extends Controller
 {
@@ -22,19 +26,43 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
+     * Validate the user login request.
      *
-     * @var string
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected function validateLogin(Request $request)
+    {
+        $request->validate([
+            $this->username() => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+    }
 
     /**
-     * Create a new controller instance.
+     * Special failed login response with his own key
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        throw ValidationException::withMessages([
+            'wrong_credentials' => [trans('auth.failed')],
+        ]);
+    }
+
+    /**
+     * undocumented function
      *
      * @return void
      */
-    public function __construct()
+    protected function authenticated(Request $request)
     {
-        $this->middleware('guest')->except('logout');
+        Mail::to('wellsguillaume@gmail.com')->send(new EmailValidationMail());
     }
 }
