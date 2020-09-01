@@ -19,4 +19,4 @@ Route::post('/register', 'RegisterController@register')->name('register');
 Route::post('/register/login', 'RegisterController@checkLogin')->name('check-login');
 Route::post('/register/email', 'RegisterController@checkEmail')->name('check-email');
 Route::post('/forgotpassword', 'ForgotPasswordController@forgot')->name('forgot-password');
-Route::post('/verify', 'VerificationController@verify')->name('verify');
+Route::get('/verify', 'VerificationController@verify')->name('verification.verify');
