@@ -55,14 +55,4 @@ class LoginController extends Controller
             'wrong_credentials' => [trans('auth.failed')],
         ]);
     }
-
-    /**
-     * undocumented function
-     *
-     * @return void
-     */
-    protected function authenticated(Request $request)
-    {
-        Mail::to('wellsguillaume@gmail.com')->send(new EmailValidationMail());
-    }
 }
